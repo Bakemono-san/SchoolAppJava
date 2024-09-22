@@ -21,6 +21,6 @@ public interface ApprenantRepository  extends SoftDeleteRepository<ApprenantEnti
             "JOIN r.promos p " +
             "WHERE p.etat = 'ACTIVE' AND p.deleted = false")
     List<ApprenantEntity> findApprenantsByActivePromo();
-    List<ApprenantEntity> findByReferentielAndReferentiel_Promo(ReferentielEntity referentiel, PromoEntity promo);
+    //List<ApprenantEntity> findByReferentielAndReferentiel_Promo(ReferentielEntity referentiel, PromoEntity promo);
 
 }
