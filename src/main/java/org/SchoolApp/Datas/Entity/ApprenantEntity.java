@@ -1,5 +1,6 @@
 package org.SchoolApp.Datas.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -37,4 +38,21 @@ public class ApprenantEntity {
     @ManyToOne
     @JoinColumn(name = "referentiel_id", nullable = false)
     private ReferentielEntity referentiel;
+
+    @OneToMany(mappedBy = "apprenant", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<NotesEntity> notes;
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        ApprenantEntity other = (ApprenantEntity) obj;
+        return id != null && id.equals(other.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return 31; // or use a constant or just return a unique identifier hash
+    }
 }

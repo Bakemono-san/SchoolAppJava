@@ -23,5 +23,5 @@ public interface UserRepository extends SoftDeleteRepository<UserEntity, Long> {
     List<UserEntity> findByRoleAndStatus(Role role, StatusEnum status);
 
     // Trouver tous les utilisateurs non supprimés
-    List<UserEntity> findByDeletedFalse();
+    //List<UserEntity> findByDeletedFalse();
 }

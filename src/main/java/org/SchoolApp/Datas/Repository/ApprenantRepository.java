@@ -21,6 +21,19 @@ public interface ApprenantRepository  extends SoftDeleteRepository<ApprenantEnti
             "JOIN r.promos p " +
             "WHERE p.etat = 'ACTIVE' AND p.deleted = false")
     List<ApprenantEntity> findApprenantsByActivePromo();
-    //List<ApprenantEntity> findByReferentielAndReferentiel_Promo(ReferentielEntity referentiel, PromoEntity promo);
+
+    @Query("SELECT a FROM ApprenantEntity a " +
+            "JOIN a.referentiel r " +
+            "JOIN r.promos p " +
+            "WHERE p.id = :promoId AND p.deleted = false")
+    List<ApprenantEntity> findApprenantsByPromoId(@Param("promoId") Long promoId);
+    @Query("SELECT a FROM ApprenantEntity a " +
+            "JOIN a.referentiel r " +
+            "JOIN r.promos p " +
+            "WHERE p.id = :promoId AND r.id = :referentielId AND p.deleted = false")
+    List<ApprenantEntity> findApprenantsByPromoIdAndReferentielId(@Param("promoId") Long promoId, @Param("referentielId") Long referentielId);
+
+//    List<ApprenantEntity> findByReferentielAndPromo_Referentiel(ReferentielEntity referentiel, PromoEntity promo);
+
 
 }

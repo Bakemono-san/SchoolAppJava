@@ -47,6 +47,7 @@ public class ReferentielServiceImpl implements ReferentielService {
                 .orElseThrow(() -> new RuntimeException("Referentiel not found"));
     }
 
+
     @Override
     public ReferentielEntity createReferentiel(ReferentielEntity referentiel, List<CompetencesEntity> competences) {
         referentiel.setCompetences(new HashSet<>(competences));

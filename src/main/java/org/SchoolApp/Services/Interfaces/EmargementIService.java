@@ -28,5 +28,5 @@ public interface EmargementIService {
     public List<EmargementEntity> getEmargementsByApprenantAndMonth(Long apprenantId, int year, int month);
     public EmargementEntity getEmargementsByApprenantAndDate(Long apprenantId, LocalDate date);
     public List<EmargementEntity> getEmargementsByApprenantId(Long apprenantId);
-//    public List<EmargementEntity> emargementAll(Integer mois, Integer annee, String referentiel, LocalDate date);
+   public List<EmargementEntity> emargementAll(Integer mois, Integer annee, Long referentielId, LocalDate date, Long promoId);
 }

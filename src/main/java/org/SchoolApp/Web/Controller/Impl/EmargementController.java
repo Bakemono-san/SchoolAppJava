@@ -6,6 +6,7 @@ import org.SchoolApp.Datas.Entity.UserEntity;
 import org.SchoolApp.Services.Interfaces.EmargementIService;
 import org.SchoolApp.Web.Controller.Interfaces.EmargementIController;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -65,12 +66,15 @@ public class EmargementController implements EmargementIController {
     public Map<String, Object> emargerUser(Long userId){
         return emargementService.emargerUser(userId);
     }
-//    @GetMapping("/all")
-//    public List<EmargementEntity> emargementByRef(
-//            @RequestParam(required = false) Integer mois,
-//            @RequestParam(required = false) Integer annee,
-//            @RequestParam(required = false) String referentiel,
-//            @RequestParam(required = false) LocalDate date) {
-//        return emargementService.emargementAll(mois, annee, referentiel, date);
-//    }
+    @GetMapping("/all")
+    public ResponseEntity<List<EmargementEntity>> getEmargements(
+            @RequestParam(required = false) Integer mois,
+            @RequestParam(required = false) Integer annee,
+            @RequestParam(required = false) Long referentielId,
+            @RequestParam(required = false) LocalDate date,
+            @RequestParam(required = false) Long promoId) {
+        List<EmargementEntity> emargements = emargementService.emargementAll(mois, annee, referentielId, date, promoId);
+        return ResponseEntity.ok(emargements);
+    }
+
 }

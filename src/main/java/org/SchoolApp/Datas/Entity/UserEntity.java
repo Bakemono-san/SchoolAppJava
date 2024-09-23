@@ -1,6 +1,7 @@
 package org.SchoolApp.Datas.Entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.SchoolApp.Datas.Enums.StatusEnum;
@@ -45,6 +46,7 @@ public class UserEntity {
     private Fonction fonction;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore
     private ApprenantEntity apprenant;
 
     @ManyToMany
@@ -54,4 +56,17 @@ public class UserEntity {
             inverseJoinColumns = @JoinColumn(name = "emargement_id")
     )
     private Set<EmargementEntity> emargements;
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        UserEntity other = (UserEntity) obj;
+        return id != null && id.equals(other.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return 31; // or use a constant or just return a unique identifier hash
+    }
 }

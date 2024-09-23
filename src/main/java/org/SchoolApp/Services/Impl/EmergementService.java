@@ -299,20 +299,40 @@ public class EmergementService implements EmargementIService {
 
     }
 
-//    @Override
-//    public List<EmargementEntity> emargementAll(Integer mois, Integer annee, String referentiel, LocalDate date) {
-//        if (mois != null && referentiel != null) {
-//            return emargementByReferentielAndMonthService.getEmargements(mois, annee != null ? annee : LocalDate.now().getYear(), referentiel);
-//        } else if (mois != null) {
-//            return emargementByMonthService.getEmargements(mois, annee != null ? annee : LocalDate.now().getYear());
-//        } else if (date != null && referentiel != null) {
-//            return emargementByReferentielAndDateService.getEmargements(date, referentiel);
-//        } else if (date != null) {
-//            return emargementByDateService.getEmargements(date);
-//        } else {
-//            return emargementAllService.getAllEmargements();
-//        }
-    //     }
+    @Override
+    public List<EmargementEntity> emargementAll(Integer mois, Integer annee, Long referentielId, LocalDate date, Long promoId) {
+        List<ApprenantEntity> apprenants;
+
+        if (referentielId != null && promoId == null) {
+            apprenants = apprenantRepository.findApprenantsByReferentielAndActivePromo(referentielId);
+        } else if (referentielId != null && promoId != null) {
+            apprenants = apprenantRepository.findApprenantsByPromoIdAndReferentielId(promoId,referentielId);
+        } else if (promoId != null) {
+            apprenants = apprenantRepository.findApprenantsByPromoId(promoId);
+        } else {
+            apprenants = apprenantRepository.findApprenantsByActivePromo();
+        }
+        List<EmargementEntity> emargements = new ArrayList<>();
+        for (ApprenantEntity apprenant : apprenants) {
+            UserEntity user = apprenant.getUser();
+
+            if (mois != null) {
+                int year = (annee != null) ? annee : LocalDate.now().getYear();
+                emargements.addAll(getEmargementsByMonth(user, year, mois));
+            } else if (date != null) {
+                EmargementEntity emargement = getEmargementByUserAndDate(user, date);
+                if (emargement != null) {
+                    emargements.add(emargement);
+                }
+            } else {
+                emargements.addAll(getAllEmargementsByUser(user));
+            }
+        }
+        return emargements;
+    }
+
+
+
 
 
 

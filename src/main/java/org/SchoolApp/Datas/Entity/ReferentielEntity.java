@@ -1,10 +1,16 @@
 package org.SchoolApp.Datas.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.SchoolApp.Datas.Enums.StatusReferenceEnum;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -32,8 +38,9 @@ public class ReferentielEntity {
     @Enumerated(EnumType.STRING)
     private StatusReferenceEnum status;
 
-    @ManyToMany(mappedBy = "referentiels")
-    private List<PromoEntity> promos;
+    @ManyToMany(mappedBy = "referentiels",fetch = FetchType.EAGER)
+    @JsonIgnore
+    private Set<PromoEntity> promos = new HashSet<>();
 
     @OneToMany(mappedBy = "referentiel")
     private Set<ApprenantEntity> apprenants;
@@ -46,4 +53,16 @@ public class ReferentielEntity {
     )
     private Set<CompetencesEntity> competences;
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        UserEntity other = (UserEntity) obj;
+        return id != null && id.equals(other.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return 31; // or use a constant or just return a unique identifier hash
+    }
 }
