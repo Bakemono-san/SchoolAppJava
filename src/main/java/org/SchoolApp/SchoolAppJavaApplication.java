@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"org.SchoolApp", "org.odc.core"})
 @EnableJpaRepositories(basePackages = "org.SchoolApp.Datas.Repository")
 @EntityScan(basePackages = "org.SchoolApp.Datas.Entity")
 @EnableTransactionManagement

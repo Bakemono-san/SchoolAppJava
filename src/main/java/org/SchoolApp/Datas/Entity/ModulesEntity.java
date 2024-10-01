@@ -3,15 +3,18 @@ package org.SchoolApp.Datas.Entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.odc.core.Datas.Entity.EntityAbstract;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
 @ToString
-public class ModulesEntity  extends EntityAbstract{
+public class ModulesEntity  extends EntityAbstract {
     @Id
     @GeneratedValue
     private Long id;
@@ -30,4 +33,6 @@ public class ModulesEntity  extends EntityAbstract{
     @OneToMany(mappedBy = "module", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     @JsonIgnore
     private List<NotesEntity> notes;
+
+
 }

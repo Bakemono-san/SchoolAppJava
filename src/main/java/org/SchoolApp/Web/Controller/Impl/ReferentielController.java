@@ -10,6 +10,7 @@ import org.SchoolApp.Web.Dtos.Response.ReferentielResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,89 +27,112 @@ public class ReferentielController {
     private ReferentielMapper referentielMapper;
 
     @PostMapping
-    public ResponseEntity<ReferentielResponseDto> createReferentiel(@RequestBody ReferentielRequestDto referentielRequestDto) {
-        var referentielEntity = referentielMapper.toEntity(referentielRequestDto);
-        var savedReferentiel = referentielService.createReferentiel(referentielEntity);
-        return ResponseEntity.ok(referentielMapper.toDto(savedReferentiel));
+    public ResponseEntity<?> createReferentiel(@Validated @RequestBody ReferentielRequestDto referentielRequestDto) {
+        try {
+            var referentielEntity = referentielMapper.toEntity(referentielRequestDto);
+            var savedReferentiel = referentielService.createReferentiel(referentielEntity);
+            var responseDto = referentielMapper.toDto(savedReferentiel);
+            return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Erreur lors de la création du référentiel.", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
-
 
     @GetMapping
-    public ResponseEntity<List<ReferentielResponseDto>> listReferentiels(
+    public ResponseEntity<?> listReferentiels(
             @RequestParam(required = false) StatusReferenceEnum status) {
-
-        List<ReferentielEntity> referentiels;
-
-        // Conditional logic for filtering by status or fetching all active ones
-        if (status != null) {
-            referentiels = referentielService.listReferentielsByStatus(status);
-        } else {
-            referentiels = referentielService.listActiveReferentiels();
+        try {
+            List<ReferentielEntity> referentiels;
+            if (status != null) {
+                referentiels = referentielService.listReferentielsByStatus(status);
+            } else {
+                referentiels = referentielService.listActiveReferentiels();
+            }
+            List<ReferentielResponseDto> responseDtos = referentiels.stream()
+                    .map(referentielMapper::toDto)
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(responseDtos);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Erreur lors de la récupération des référentiels.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        // Mapping entities to DTOs
-        List<ReferentielResponseDto> responseDtos = referentiels.stream()
-                .map(referentielMapper::toDto)
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok(responseDtos);
     }
-
-
-
-
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteReferentiel(@PathVariable Long id) {
-        referentielService.deleteReferentiel(id);
-        return ResponseEntity.ok().build();
+        try {
+            referentielService.deleteReferentiel(id);
+            return ResponseEntity.ok().build();
+        } catch (IllegalStateException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Erreur lors de la suppression du référentiel.", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("/archive")
-    public ResponseEntity<List<ReferentielEntity>> listArchivedReferentiels() {
-        return ResponseEntity.ok(referentielService.listArchivedReferentiels());
+    public ResponseEntity<?> listArchivedReferentiels() {
+        try {
+            List<ReferentielEntity> archivedReferentiels = referentielService.listArchivedReferentiels();
+            List<ReferentielResponseDto> responseDtos = archivedReferentiels.stream()
+                    .map(referentielMapper::toDto)
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(responseDtos);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Erreur lors de la récupération des référentiels archivés.", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ReferentielResponseDto> getReferentielById(
+    public ResponseEntity<?> getReferentielById(
             @PathVariable Long id,
             @RequestParam(required = false) Long competenceId,
             @RequestParam(required = false) Long moduleId) {
-        ReferentielEntity referentiel = referentielService.getReferentielById(id);
-        if (referentiel == null) {
-            return ResponseEntity.notFound().build();
-        }
+        try {
+            ReferentielEntity referentiel = referentielService.getReferentielById(id);
+            if (referentiel == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Referentiel non trouvé.");
+            }
 
-        ReferentielResponseDto referentielDto = referentielMapper.toDto(referentiel);
-        if (competenceId != null) {
-            referentielDto.setCompetences(referentielDto.getCompetences().stream()
-                    .filter(competence -> competence.getId().equals(competenceId))
-                    .collect(Collectors.toList()));
-        }
-
-        if (moduleId != null) {
-            referentielDto.getCompetences().forEach(competence -> {
-                competence.setModules(competence.getModules().stream()
-                        .filter(module -> module.getId().equals(moduleId))
+            ReferentielResponseDto referentielDto = referentielMapper.toDto(referentiel);
+            if (competenceId != null) {
+                referentielDto.setCompetences(referentielDto.getCompetences().stream()
+                        .filter(competence -> competence.getId().equals(competenceId))
                         .collect(Collectors.toList()));
-            });
-        }
+            }
 
-        return ResponseEntity.ok(referentielDto);
+            if (moduleId != null) {
+                referentielDto.getCompetences().forEach(competence -> {
+                    competence.setModules(competence.getModules().stream()
+                            .filter(module -> module.getId().equals(moduleId))
+                            .collect(Collectors.toList()));
+                });
+            }
+
+            return ResponseEntity.ok(referentielDto);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Erreur lors de la récupération du référentiel.", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
-
-
     @PatchMapping("/{id}")
-    public ResponseEntity<ReferentielResponseDto> modifyReferentiel(
+    public ResponseEntity<?> modifyReferentiel(
             @PathVariable Long id,
-            @RequestBody ReferentielUpdateRequestDto referentielUpdateRequestDto) {
+            @Validated @RequestBody ReferentielUpdateRequestDto referentielUpdateRequestDto) {
         try {
             ReferentielEntity updates = referentielMapper.toEntity(referentielUpdateRequestDto);
             ReferentielEntity updatedReferentiel = referentielService.updateReferentielWithDetails(id, updates);
-            return ResponseEntity.ok(referentielMapper.toDto(updatedReferentiel));
+            ReferentielResponseDto responseDto = referentielMapper.toDto(updatedReferentiel);
+            return ResponseEntity.ok(responseDto);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            return new ResponseEntity<>("Erreur lors de la mise à jour du référentiel.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

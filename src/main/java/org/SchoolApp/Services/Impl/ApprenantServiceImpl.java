@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -41,62 +42,80 @@ public class ApprenantServiceImpl implements ApprenantService {
 
     @Override
     public ApprenantEntity createApprenant(ApprenantEntity apprenant) {
-        // Valider l'apprenant
         apprenantValidator.validateApprenant(apprenant);
 
         UserEntity user = apprenant.getUser();
 
-        // Générer un mot de passe par défaut et le hacher
         String defaultPassword = generateDefaultPassword();
         user.setPassword(hashPassword(defaultPassword));
 
-        // Définir le statut par défaut si non défini
         if (user.getStatus() == null) {
             user.setStatus(StatusEnum.ACTIF);
         }
 
-        // Sauvegarder l'utilisateur
         userRepository.save(user);
-
-        // Associer l'utilisateur à l'apprenant
         apprenant.setUser(user);
 
-        // Récupérer le référentiel depuis la base de données
         ReferentielEntity referentiel = referentielRepository.findById(apprenant.getReferentiel().getId())
                 .orElseThrow(() -> new RuntimeException("Référentiel non trouvé."));
         apprenant.setReferentiel(referentiel);
 
-        // Générer le matricule pour l'apprenant
         String matricule = generateMatricule();
         apprenant.setMatricule(matricule);
 
-        // Générer le QR code et stocker le lien
         String qrCodeLink = qrCodeService.generateQRCode(matricule);
         apprenant.setQrCodeLink(qrCodeLink);
 
-        // Sauvegarder l'apprenant
         ApprenantEntity savedApprenant = apprenantRepository.save(apprenant);
 
-        // Envoyer l'email d'authentification
         emailService.sendAuthenticationEmail(user.getEmail(), user.getEmail(), defaultPassword);
 
         return savedApprenant;
     }
 
+    @Override
+    public List<ApprenantEntity> getAllApprenants() {
+        return apprenantRepository.findAll();
+    }
+
+    @Override
+    public ApprenantEntity getApprenantById(Long id) {
+        return apprenantRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Apprenant non trouvé avec ID: " + id));
+    }
+
+    @Override
+    public ApprenantEntity updateApprenant(Long id, ApprenantEntity apprenantUpdates) {
+        ApprenantEntity existingApprenant = apprenantRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Apprenant non trouvé avec ID: " + id));
+
+        if (apprenantUpdates.getNomTuteur() != null) {
+            existingApprenant.setNomTuteur(apprenantUpdates.getNomTuteur());
+        }
+        if (apprenantUpdates.getPrenomTuteur() != null) {
+            existingApprenant.setPrenomTuteur(apprenantUpdates.getPrenomTuteur());
+        }
+
+        return apprenantRepository.save(existingApprenant);
+    }
+
+    @Override
+    public void deleteApprenant(Long id) {
+        ApprenantEntity apprenant = apprenantRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Apprenant non trouvé avec ID: " + id));
+        apprenantRepository.softDelete(id);
+    }
+
     private String generateMatricule() {
-        // Générer un matricule unique
         return "MAT-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
     }
 
     private String generateDefaultPassword() {
-        // Générer un mot de passe aléatoire
         return UUID.randomUUID().toString().substring(0, 8);
     }
 
     private String hashPassword(String password) {
-        // Hacher le mot de passe en utilisant BCrypt ou une autre méthode sécurisée
-        // Par exemple :
-        // return new BCryptPasswordEncoder().encode(password);
-        return password; // Placeholder, à remplacer par le hachage réel
+        // Remplacer par le hachage réel avec BCrypt ou autre
+        return password;
     }
 }

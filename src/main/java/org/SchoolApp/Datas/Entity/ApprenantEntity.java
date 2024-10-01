@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;
+import org.odc.core.Datas.Entity.EntityAbstract;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
 @Data
 @Entity
 @ToString
-public class ApprenantEntity extends EntityAbstract{
+public class ApprenantEntity extends EntityAbstract {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -55,4 +56,11 @@ public class ApprenantEntity extends EntityAbstract{
     @JsonBackReference
     @ToString.Exclude
     private List<NotesEntity> notes;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "promo_id", nullable = false)
+    @JsonIgnore
+    @ToString.Exclude
+    private PromoEntity promo;
+
 }

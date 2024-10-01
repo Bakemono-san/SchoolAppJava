@@ -26,6 +26,9 @@
 		<tag/>
 		<url/>
 	</scm>
+
+
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -50,32 +53,16 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.mapstruct</groupId>
-			<artifactId>mapstruct</artifactId>
-			<version>1.6.2</version>
-		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/org.mapstruct/mapstruct-processor -->
-		<dependency>
-			<groupId>org.mapstruct</groupId>
-			<artifactId>mapstruct-processor</artifactId>
-			<version>1.6.2</version>
-		</dependency>
-
-
-		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
 			<version>2.1.0</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-devtools -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
 			<version>3.3.4</version>
 		</dependency>
-
 
 		<dependency>
 			<groupId>org.postgresql</groupId>
@@ -98,8 +85,6 @@
 			<artifactId>springdoc-openapi-ui</artifactId>
 			<version>1.8.0</version>
 		</dependency>
-
-
 
 		<dependency>
 			<groupId>org.mapstruct</groupId>
@@ -125,15 +110,64 @@
 		</dependency>
 
 
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
 
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-api</artifactId>
+			<version>0.11.2</version>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-impl</artifactId>
+			<version>0.11.2</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-jackson</artifactId>
+			<version>0.11.2</version>
+			<scope>runtime</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>5.2.2</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.odc</groupId>
+			<artifactId>core</artifactId>
+			<version>1.0.3</version>
+		</dependency>
 	</dependencies>
+
+	<repositories>
+		<repository>
+			<id>github</id>
+			<url>https://maven.pkg.github.com/Cheeikh/dependance_java_core</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
+
 
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<version>3.2.0</version>
+				<version>3.3.4</version>
+				<configuration>
+					<mainClass>org.SchoolApp.SchoolAppJavaApplication</mainClass>
+				</configuration>
 				<executions>
 					<execution>
 						<goals>
@@ -144,5 +178,6 @@
 			</plugin>
 		</plugins>
 	</build>
+
 
 </project>

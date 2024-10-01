@@ -9,7 +9,7 @@ public class ReferentielResponseDto {
     private String libelle;
     private String code;
     private String description;
-    private String photoCouverture;  // Keep camelCase consistent
-    private String status;  // Map status as a string
-    private List<CompetenceResponseDto> competences;  // List of competence DTOs
+    private String photoCouverture;  // Field name matches entity
+    private String status;  // Assuming it's an Enum to String mapping
+    private List<CompetenceResponseDto> competences;  // Competence list for the response
 }

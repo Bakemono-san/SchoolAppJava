@@ -7,8 +7,8 @@ import lombok.Data;
 import lombok.ToString;
 import org.SchoolApp.Datas.Enums.StatusEnum;
 
-import java.time.LocalDateTime;
 import java.util.Set;
+import org.odc.core.Datas.Entity.EntityAbstract;
 
 @Data
 @Entity
@@ -39,13 +39,13 @@ public class UserEntity extends EntityAbstract{
     @JoinColumn(name = "role_id", nullable = true)
     @JsonIgnore
     @ToString.Exclude
-    private Role role;
+    private RoleEntity role;
 
     @ManyToOne
     @JoinColumn(name = "fonction_id", nullable = true)
     @JsonIgnore
     @ToString.Exclude
-    private Fonction fonction;
+    private FonctionEntity fonction;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonIgnore

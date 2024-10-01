@@ -1,15 +1,13 @@
 package org.SchoolApp.Datas.Entity;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.SchoolApp.Datas.Enums.EtatEnum;
+import org.odc.core.Datas.Entity.EntityAbstract;
 import org.hibernate.annotations.Where;
-
-import java.time.LocalDateTime;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -17,12 +15,13 @@ import java.util.Set;
 
 @Data
 @Entity
-public class PromoEntity extends EntityAbstract{
+@ToString
+public class PromoEntity extends EntityAbstract {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false,unique = true)
+    @Column(nullable = false, unique = true)
     private String libelle;
 
     private Date date_debut;
@@ -47,12 +46,12 @@ public class PromoEntity extends EntityAbstract{
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
-        UserEntity other = (UserEntity) obj;
+        PromoEntity other = (PromoEntity) obj;
         return id != null && id.equals(other.getId());
     }
 
     @Override
     public int hashCode() {
-        return 31; // or use a constant or just return a unique identifier hash
+        return 31;
     }
 }

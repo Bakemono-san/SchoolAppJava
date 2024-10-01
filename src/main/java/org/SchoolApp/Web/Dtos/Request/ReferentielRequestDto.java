@@ -8,6 +8,6 @@ public class ReferentielRequestDto {
     private String libelle;
     private String code;
     private String description;
-    private String photoCouverture;  // Use camelCase to match the entity
-    private List<CompetenceRequestDto> competences;
+    private String photoCouverture;  // Field name matches entity for proper mapping
+    private List<CompetenceRequestDto> competences;  // Competence relationship if necessary
 }

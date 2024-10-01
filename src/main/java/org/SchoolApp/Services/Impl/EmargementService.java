@@ -7,6 +7,7 @@ import org.SchoolApp.Datas.Repository.ApprenantRepository;
 import org.SchoolApp.Datas.Repository.EmargementRepository;
 import org.SchoolApp.Datas.Repository.UserRepository;
 import org.SchoolApp.Services.Interfaces.EmargementIService;
+import org.SchoolApp.Web.Dtos.Request.EmargementUpdateRequestDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +16,7 @@ import java.time.LocalTime;
 import java.util.*;
 
 @Service
-public class EmergementService implements EmargementIService {
+public class EmargementService implements EmargementIService {
 
     @Autowired
     private EmargementRepository emargementRepository;
@@ -32,7 +33,7 @@ public class EmergementService implements EmargementIService {
     @Override
     public List<EmargementEntity> getEmargementsByApprenantAndMonth(Long apprenantId, int year, int month) {
         Optional<ApprenantEntity> apprenantOptional = apprenantRepository.findById(apprenantId);
-        if (!apprenantOptional.isPresent()) {
+        if (apprenantOptional.isEmpty()) {
             throw new IllegalArgumentException("L'apprenant avec l'ID " + apprenantId + " n'existe pas");
         }
         UserEntity user = apprenantOptional.get().getUser();
@@ -128,7 +129,7 @@ public class EmergementService implements EmargementIService {
 
         // Check if user exists
         Optional<UserEntity> userOptional = userRepository.findById(userId);
-        if (!userOptional.isPresent()) {
+        if (userOptional.isEmpty()) {
             errors.add(Map.of(
                     "id", userId,
                     "error", "L'utilisateur avec l'ID " + userId + " n'existe pas"
@@ -190,7 +191,7 @@ public class EmergementService implements EmargementIService {
         Map<String, Object> result = new HashMap<>();
 
         Optional<ApprenantEntity> apprenantOptional = apprenantRepository.findById(apprenantId);
-        if (!apprenantOptional.isPresent()) {
+        if (apprenantOptional.isEmpty()) {
             result.put("id", apprenantId);
             result.put("error", "L'apprenant avec l'ID " + apprenantId + " n'existe pas");
             return result;
@@ -244,7 +245,7 @@ public class EmergementService implements EmargementIService {
         LocalDate currentDate = LocalDate.now();
 
         Optional<ApprenantEntity> apprenantOptional = apprenantRepository.findById(apprenantId);
-        if (!apprenantOptional.isPresent()) {
+        if (apprenantOptional.isEmpty()) {
             result.put("error", "L'apprenant avec l'ID " + apprenantId + " n'existe pas");
             return result;
         }
@@ -331,10 +332,10 @@ public class EmergementService implements EmargementIService {
         return emargements;
     }
 
-
-
-
-
+    @Override
+    public Map<String, Object> updateEmargement(Long id, EmargementUpdateRequestDto requestDto) {
+        return Map.of();
+    }
 
 
 }

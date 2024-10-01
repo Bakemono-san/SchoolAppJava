@@ -1,13 +1,13 @@
 package org.SchoolApp.Services.Interfaces;
 
-import org.SchoolApp.Datas.Entity.Fonction;
+import org.SchoolApp.Datas.Entity.FonctionEntity;
 
 import java.util.List;
 
 public interface FonctionService {
-    List<Fonction> getAllFonctions();
-    Fonction getFonctionById(Long id);
-    Fonction createFonction(Fonction fonction);
-    Fonction updateFonction(Long id, Fonction fonction);
+    List<FonctionEntity> getAllFonctions();
+    FonctionEntity getFonctionById(Long id);
+    FonctionEntity createFonction(FonctionEntity fonction);
+    FonctionEntity updateFonction(Long id, FonctionEntity fonction);
     void deleteFonction(Long id);
 }

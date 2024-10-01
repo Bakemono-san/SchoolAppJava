@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.SchoolApp.Datas.Enums.StatusReferenceEnum;
+import org.odc.core.Datas.Entity.EntityAbstract;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ import java.util.Set;
 
 @Data
 @Entity
-public class ReferentielEntity extends EntityAbstract{
+public class ReferentielEntity extends EntityAbstract {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

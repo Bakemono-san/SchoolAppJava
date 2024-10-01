@@ -15,44 +15,43 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/Promotions")
-public class PromoController implements CrudController<PromoEntity,PromoRequest, PromoUpdateRequest> {
+public class PromoController  {
+
     @Autowired
     private PromoService promoService;
 
     @PostMapping("")
-    public PromoEntity Create(@RequestBody PromoRequest promoEntity){
-        return promoService.createPromo(promoEntity);
+    public PromoEntity create(@RequestBody PromoRequest promoRequest) {
+        return promoService.createPromo(promoRequest);
     }
 
     @GetMapping("")
-    public List<PromoEntity> findAll(){
+    public List<PromoEntity> findAll() {
         return promoService.getAllPromos();
     }
 
-    @GetMapping("/encours")
-    public PromoEntity getPromoEncours(){
-        return promoService.getActivePromo();
+    @GetMapping("/encours/{referentielId}")
+    public PromoEntity getPromoEncours(@PathVariable Long referentielId) {
+        return promoService.getActivePromo(referentielId);
     }
 
     @PatchMapping("/{id}/etat")
-    public List<PromoEntity> updateEtatPromo(@PathVariable Long id, @RequestBody EtatEnum etat){
+    public List<PromoEntity> updateEtatPromo(@PathVariable Long id, @RequestBody EtatEnum etat) {
         return promoService.updateEtat(id, etat);
     }
 
     @GetMapping("/{id}")
-    public Optional<PromoEntity> findById(@PathVariable Long id){
-        return promoService.findById(id);
+    public PromoEntity findById(@PathVariable Long id) {
+        return promoService.getById(id);
     }
 
     @PatchMapping("/{id}")
-    public PromoEntity Update(@PathVariable Long id, @RequestBody PromoUpdateRequest promoUpdateRequest){
+    public PromoEntity update(@PathVariable Long id, @RequestBody PromoUpdateRequest promoUpdateRequest) {
         return promoService.update(id, promoUpdateRequest);
     }
 
-
-
     @PatchMapping("/{id}/cloturer")
-    public PromoEntity cloturerPromo(@PathVariable Long id){
+    public PromoEntity cloturerPromo(@PathVariable Long id) {
         return promoService.cloturePromo(id);
     }
 }
